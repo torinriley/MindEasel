@@ -1,9 +1,13 @@
+/* General body styling */
+
+
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
 }
 
+/* Toolbar styling */
 #toolbar {
     position: fixed;
     top: 0;
@@ -20,35 +24,54 @@ body {
     box-sizing: border-box;
 }
 
-/* Dropdown menu hidden by default */
-/* Dropdown menu hidden by default */
-.dropdown-menu {
-    visibility: hidden;
-    opacity: 0; /* Start with the menu fully transparent */
-    position: absolute; /* Position it relative to the toolbar */
-    top: 100%; /* Keep it just below the toolbar */
-    left: 0; /* Align it with the left edge of the toolbar */
+/* Font size buttons container styling */
+#font-size-buttons {
+    position: absolute;
+    top: calc(100% + 10px); /* Positions the font-size buttons just below the toolbar with a 10px gap */
+    left: 10px; /* Aligns the buttons with the left edge of the toolbar */
+    display: flex;
     flex-direction: row;
-    justify-content: space-around;
-    padding: 10px;
+    gap: 10px; /* Adds spacing between the buttons */
     background-color: transparent;
-    border: none;
-    border-radius: 8px;
-    box-shadow: none;
+    z-index: 999; /* Keeps the buttons above other elements */
     transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
 }
 
-.dropdown-active {
-    visibility: visible;
-    opacity: 1; 
+/* Font size button styling */
+.font-size-button {
+    border: 2px solid black;
+    border-radius: 40px; /* Rounded borders */
+    background-color: #fff; /* White fill */
+    padding: 8px 16px;
+    min-width: 100px;
+    font-size: 16px; 
+    font-weight: 500; 
+    text-align: center; 
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
+/* Hover effect for font size buttons */
+.font-size-button:hover {
+    background-color: rgba(0, 0, 0, 0.1); /* Adds a subtle fill on hover */
+    border-color: #000;
+}
+
+/* Toolbar button styling */
 .tool-button {
     border-radius: 5px;
     padding: 8px 16px;
     margin-right: 10px;
     cursor: pointer;
     transition: all 0.3s ease;
+    background-color: transparent;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
 }
 
 /* Hover effect for toolbar buttons */
@@ -56,71 +79,28 @@ body {
     background: #fff;
     box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2);
 }
-/* Button styling */
-.font-size-button {
-    border: 2px solid black;
-    border-radius: 20px;
-    margin: 5px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-#small-font {
-    font-size: 14px;
-    font-weight: 300;
-    padding: 8px 16px;
-    min-width: 80px;
-    background-color: #fff;
-}
-
-#medium-font {
-    font-size: 14px;
-    font-weight: 300;
-    padding: 8px 16px;
-    min-width: 80px;
-    background-color: #fff;
-
-}
-
-#large-font {
-    font: 14px;
-    font-weight: 300;
-    padding: 8px 16px;
-    min-width: 80px;
-    background-color: #fff;
-
-}
-
-/* Hover effect */
-.font-size-button:hover {
-    background-color: #e0e0e0;
-    border-color: #000;
-}
-
-.tool-button:hover {
-    background: #fff;
-    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2);
-}
-
 .tool-button img {
     width: 24px;
     height: 24px;
+    background-color: transparent;
+    border: none;
 }
 
 #text-tool {
     font-size: 22px;
     font-weight: bold;
     background-color: transparent;
-    box-shadow: none; /* Remove the box shadow */
-    border: none; /* Remove the border */
+    box-shadow: none; 
+    border: none; 
+    color: #000;
 }
 
-#text-tool:hover {
+#text-tool:hover,
+#text-tool:active {
     background: #fff;
     box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2);
+    border-color: #bbb;
 }
-
-
 
 #clear-tool {
     position: absolute;
@@ -128,6 +108,13 @@ body {
     background: #ffdddd;
     border: 1px solid #ff8888;
     color: #ff0000;
+    font-weight: bold;
+}
+
+#clear-tool:hover {
+    background: #ffe6e6;
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2);
+    border-color: #ff6666;
 }
 
 #canvas {
@@ -181,4 +168,19 @@ body {
 .disabled {
     pointer-events: none;
     cursor: default;
+}
+
+/* Caption box styling */
+.caption-box {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 5px;
+    background: rgba(255, 255, 255, 0.5); /* Transparent background */
+    color: black; /* Black text color */
+    border-top: 1px solid #ccc;
+    box-sizing: border-box;
+    display: none; /* Hidden by default */
+    z-index: 1;
 }

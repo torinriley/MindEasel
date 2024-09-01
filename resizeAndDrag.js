@@ -1,51 +1,4 @@
-export function createImageField(src) {
-    const canvas = document.getElementById('canvas');
-    
-    const imageField = document.createElement('div');
-    imageField.className = 'image-field';
-    imageField.style.position = 'absolute';
-    imageField.style.top = '50px';  // Initial position
-    imageField.style.left = '50px';
-    imageField.style.width = '300px';  
-    imageField.style.height = '300px';
-    imageField.style.padding = '0';    
-    imageField.style.border = 'none';
-    imageField.style.background = 'transparent';
-
-    const img = document.createElement('img');
-    img.src = src;
-    img.style.width = '100%';
-    img.style.height = '100%';
-    img.style.objectFit = 'contain';
-    img.draggable = false;
-
-    img.onload = function() {
-        // Position or resize the image based on its natural size or container
-        adjustImagePosition(imageField);
-    };
-
-    imageField.appendChild(img);
-
-    // Append the imageField to the canvas once the image is ready
-    canvas.appendChild(imageField);
-
-    enableResize(imageField);
-    enableDrag(imageField);
-
-    selectElement(imageField);
-}
-
-function adjustImagePosition(imageField) {
-    const previousImages = document.querySelectorAll('.image-field');
-    if (previousImages.length > 1) {
-        const lastImage = previousImages[previousImages.length - 2];
-        const lastRect = lastImage.getBoundingClientRect();
-        imageField.style.top = `${lastRect.bottom + 10}px`; // Position below the last image
-        imageField.style.left = `${lastRect.left}px`; // Align with the last image
-    }
-}
-
-function enableResize(element) {
+export function enableResize(element) {
     const handles = element.querySelectorAll('.resize-handle');
 
     handles.forEach(handle => {
@@ -53,6 +6,8 @@ function enableResize(element) {
             let isResizing = true;
             const handleClass = handle.className.split(' ')[1];
             const rect = element.getBoundingClientRect();
+
+            showResizeHandles(element);
 
             const onMouseMove = (e) => {
                 if (isResizing) {
@@ -80,6 +35,10 @@ function enableResize(element) {
                 isResizing = false;
                 document.removeEventListener('mousemove', onMouseMove);
                 document.removeEventListener('mouseup', onMouseUp);
+
+                if (!element.classList.contains('selected')) {
+                    hideResizeHandles(element);
+                }
             };
 
             document.addEventListener('mousemove', onMouseMove);
@@ -88,12 +47,12 @@ function enableResize(element) {
     });
 }
 
-function enableDrag(element) {
+export function enableDrag(element) {
     let isDragging = false;
     let offsetX, offsetY;
 
     element.addEventListener('mousedown', (e) => {
-        if (!isResizing) {
+        if (!e.target.classList.contains('resize-handle')) {
             isDragging = true;
             offsetX = e.clientX - element.getBoundingClientRect().left;
             offsetY = e.clientY - element.getBoundingClientRect().top;
@@ -112,14 +71,30 @@ function enableDrag(element) {
     });
 }
 
-function selectElement(element) {
+export function selectElement(element) {
     clearSelection();
     element.classList.add('selected');
+    showResizeHandles(element);
 }
 
-function clearSelection() {
+export function clearSelection() {
     const selectedFields = document.querySelectorAll('.text-field.selected, .image-field.selected');
     selectedFields.forEach(field => {
         field.classList.remove('selected');
+        hideResizeHandles(field);
+    });
+}
+
+function showResizeHandles(element) {
+    const handles = element.querySelectorAll('.resize-handle');
+    handles.forEach(handle => {
+        handle.style.display = 'block';
+    });
+}
+
+function hideResizeHandles(element) {
+    const handles = element.querySelectorAll('.resize-handle');
+    handles.forEach(handle => {
+        handle.style.display = 'none';
     });
 }
