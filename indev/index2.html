@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Text Editor with Select and Typing Modes</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        #toolbar {
+            background: #f0f0f0;
+            padding: 10px;
+            display: flex;
+            border-bottom: 1px solid #ccc;
+        }
+        .tool-button {
+            margin-right: 10px;
+            padding: 10px;
+            border: none;
+            background: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        #canvas {
+            height: 100vh;
+            width: 100vw;
+            position: relative;
+            background: #f9f9f9;
+            overflow: hidden;
+        }
+        .text-field {
+            position: absolute;
+            border: 1px solid #ccc;
+            padding: 10px;
+            background: #fff;
+            border-radius: 3px;
+            font-size: 16px;
+            cursor: pointer; /* Default to pointer cursor */
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .selected {
+            border: 2px dashed #000;
+            cursor: move;
+        }
+        .resize-handle {
+            width: 10px;
+            height: 10px;
+            background: #333;
+            position: absolute;
+            display: none; /* Hidden by default */
+        }
+        .resize-handle.top-left { top: -5px; left: -5px; cursor: nwse-resize; }
+        .resize-handle.top-right { top: -5px; right: -5px; cursor: nesw-resize; }
+        .resize-handle.bottom-left { bottom: -5px; left: -5px; cursor: nesw-resize; }
+        .resize-handle.bottom-right { bottom: -5px; right: -5px; cursor: nwse-resize; }
+        .content-editable {
+            outline: none;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            cursor: text;
+        }
+        .disabled {
+            pointer-events: none;
+            cursor: default;
+        }
+    </style>
+</head>
+<body>
+    <div id="toolbar">
+        <button id="text-tool" class="tool-button">T</button>
+        <button id="bold-tool" class="tool-button"><b>B</b></button>
+        <button id="italic-tool" class="tool-button"><i>I</i></button>
+        <button id="underline-tool" class="tool-button"><u>U</u></button>
+    </div>
+    <div id="canvas"></div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const textTool = document.getElementById('text-tool');
+        const boldTool = document.getElementById('bold-tool');
+        const italicTool = document.getElementById('italic-tool');
+        const underlineTool = document.getElementById('underline-tool');
+
+        let currentTool = null;
+        let isResizing = false;
+        let isSelecting = true; // Start in select mode by default
+        let currentTextField = null;
+
+        textTool.addEventListener('click', () => {
+            currentTool = 'text';
+            isSelecting = false;
+            clearSelection();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                enterSelectMode();
+            }
+            if (e.key === 'Delete' && isSelecting && currentTextField) {
+                // Delete the selected text box when the Delete key is pressed
+                currentTextField.remove();
+                currentTextField = null;
+            }
+        });
+
+        canvas.addEventListener('click', (e) => {
+            if (currentTool === 'text' && !isSelecting && !currentTextField) {
+                createTextField(e.clientX, e.clientY);
+            } else if (isSelecting) {
+                const selectedField = e.target.closest('.text-field');
+                if (selectedField) {
+                    selectTextField(selectedField);
+                } else {
+                    clearSelection();
+                }
+            }
+        });
+
+        function createTextField(x, y) {
+            const textField = document.createElement('div');
+            textField.className = 'text-field';
+            textField.style.top = `${y}px`;
+            textField.style.left = `${x}px`;
+            textField.style.width = '150px';
+            textField.style.height = '50px';
+
+            const contentEditable = document.createElement('div');
+            contentEditable.className = 'content-editable';
+            contentEditable.contentEditable = true;
+            contentEditable.textContent = 'Type here...';
+
+            // Event listener to remove the placeholder text on first focus
+            contentEditable.addEventListener('focus', function handleFocus() {
+                if (contentEditable.textContent === 'Type here...') {
+                    contentEditable.textContent = '';
+                    contentEditable.removeEventListener('focus', handleFocus); // Remove the listener after first use
+                }
+            });
+
+            contentEditable.addEventListener('blur', () => {
+                // Enter select mode after typing is done (on blur)
+                if (!isResizing) enterSelectMode();
+            });
+
+            textField.appendChild(contentEditable);
+
+            const resizeHandles = ['top-left', 'top-right', 'bottom-left', 'bottom-right'];
+            resizeHandles.forEach(handle => {
+                const resizeHandle = document.createElement('div');
+                resizeHandle.className = `resize-handle ${handle}`;
+                textField.appendChild(resizeHandle);
+            });
+
+            canvas.appendChild(textField);
+            currentTextField = textField;
+
+            enableResize(textField);
+            enableDrag(textField);
+
+            // Enter edit mode (show handles and allow typing)
+            selectTextField(textField);
+            contentEditable.focus();
+        }
+
+        function enterSelectMode() {
+            isSelecting = true;
+            currentTool = null;
+            clearSelection();
+        }
+
+        function enableResize(element) {
+            const handles = element.querySelectorAll('.resize-handle');
+
+            handles.forEach(handle => {
+                handle.addEventListener('mousedown', (e) => {
+                    isResizing = true;
+                    const handleClass = handle.className.split(' ')[1];
+                    const rect = element.getBoundingClientRect();
+
+                    // Show handles during resizing
+                    showResizeHandles(element);
+
+                    const onMouseMove = (e) => {
+                        if (isResizing) {
+                            if (handleClass.includes('bottom-right')) {
+                                element.style.width = `${e.clientX - rect.left}px`;
+                                element.style.height = `${e.clientY - rect.top}px`;
+                            } else if (handleClass.includes('bottom-left')) {
+                                element.style.width = `${rect.right - e.clientX}px`;
+                                element.style.height = `${e.clientY - rect.top}px`;
+                                element.style.left = `${e.clientX}px`;
+                            } else if (handleClass.includes('top-right')) {
+                                element.style.width = `${e.clientX - rect.left}px`;
+                                element.style.height = `${rect.bottom - e.clientY}px`;
+                                element.style.top = `${e.clientY}px`;
+                            } else if (handleClass.includes('top-left')) {
+                                element.style.width = `${rect.right - e.clientX}px`;
+                                element.style.height = `${rect.bottom - e.clientY}px`;
+                                element.style.left = `${e.clientX}px`;
+                                element.style.top = `${e.clientY}px`;
+                            }
+                        }
+                    };
+
+                    const onMouseUp = () => {
+                        isResizing = false;
+                        document.removeEventListener('mousemove', onMouseMove);
+                        document.removeEventListener('mouseup', onMouseUp);
+                        
+                        // Hide handles after resizing is complete, if not selected
+                        if (!element.classList.contains('selected')) {
+                            hideResizeHandles(element);
+                        }
+                    };
+
+                    document.addEventListener('mousemove', onMouseMove);
+                    document.addEventListener('mouseup', onMouseUp);
+                });
+            });
+        }
+
+        function enableDrag(element) {
+            let isDragging = false;
+            let offsetX, offsetY;
+
+            element.addEventListener('mousedown', (e) => {
+                if (isSelecting && !isResizing) {
+                    isDragging = true;
+                    offsetX = e.clientX - element.getBoundingClientRect().left;
+                    offsetY = e.clientY - element.getBoundingClientRect().top;
+                }
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (isDragging) {
+                    element.style.left = `${e.clientX - offsetX}px`;
+                    element.style.top = `${e.clientY - offsetY}px`;
+                }
+            });
+
+            document.addEventListener('mouseup', () => {
+                isDragging = false;
+            });
+        }
+
+        function selectTextField(element) {
+            clearSelection();
+            element.classList.add('selected');
+            currentTextField = element;
+            // Show resize handles only in select mode or when resizing
+            showResizeHandles(element);
+
+            const contentEditable = element.querySelector('.content-editable');
+            if (isSelecting) {
+                contentEditable.classList.add('disabled');
+                contentEditable.contentEditable = false;
+            } else {
+                contentEditable.classList.remove('disabled');
+                contentEditable.contentEditable = true;
+            }
+
+            // Add double-click event to enter typing mode
+            element.addEventListener('dblclick', () => {
+                isSelecting = false;
+                contentEditable.classList.remove('disabled');
+                contentEditable.contentEditable = true;
+                contentEditable.focus(); // Focus on the text box for typing
+            });
+
+            // Prevent entering select mode when clicking inside the text box in typing mode
+            contentEditable.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent the click event from bubbling up to the canvas
+            });
+        }
+
+        function clearSelection() {
+            const selectedFields = document.querySelectorAll('.text-field.selected');
+            selectedFields.forEach(field => {
+                field.classList.remove('selected');
+                // Hide resize handles when not in select mode and not resizing
+                hideResizeHandles(field);
+
+                // Disable editing and remove cursor
+                const contentEditable = field.querySelector('.content-editable');
+                contentEditable.classList.add('disabled');
+                contentEditable.contentEditable = false;
+            });
+            currentTextField = null;
+        }
+
+        function showResizeHandles(element) {
+            const handles = element.querySelectorAll('.resize-handle');
+            handles.forEach(handle => {
+                handle.style.display = 'block';
+            });
+        }
+
+        function hideResizeHandles(element) {
+            const handles = element.querySelectorAll('.resize-handle');
+            handles.forEach(handle => {
+                handle.style.display = 'none';
+            });
+        }
+
+        boldTool.addEventListener('click', () => {
+            if (currentTextField && !isSelecting) {
+                document.execCommand('bold');
+            }
+        });
+
+        italicTool.addEventListener('click', () => {
+            if (currentTextField && !isSelecting) {
+                document.execCommand('italic');
+            }
+        });
+
+        underlineTool.addEventListener('click', () => {
+            if (currentTextField && !isSelecting) {
+                document.execCommand('underline');
+            }
+        });
+    </script>
+</body>
+</html>

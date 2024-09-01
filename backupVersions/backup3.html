@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Text Editor with Select, Typing, Copy, and Paste Modes</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        #toolbar {
+            background: #f0f0f0;
+            padding: 10px;
+            display: flex;
+            border-bottom: 1px solid #ccc;
+        }
+        .tool-button {
+            margin-right: 10px;
+            padding: 10px;
+            border: none;
+            background: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        #canvas {
+            height: 100vh;
+            width: 100vw;
+            position: relative;
+            background: #f9f9f9;
+            overflow: hidden;
+        }
+        .text-field, .image-field {
+            position: absolute;
+            border: 1px solid #ccc;
+            padding: 10px;
+            background: #fff;
+            border-radius: 3px;
+            font-size: 16px;
+            cursor: pointer;
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .selected {
+            border: 2px dashed #000;
+            cursor: move;
+        }
+        .resize-handle {
+            width: 10px;
+            height: 10px;
+            background: #333;
+            position: absolute;
+            display: none;
+        }
+        .resize-handle.top-left { top: -5px; left: -5px; cursor: nwse-resize; }
+        .resize-handle.top-right { top: -5px; right: -5px; cursor: nesw-resize; }
+        .resize-handle.bottom-left { bottom: -5px; left: -5px; cursor: nesw-resize; }
+        .resize-handle.bottom-right { bottom: -5px; right: -5px; cursor: nwse-resize; }
+        .content-editable {
+            outline: none;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            cursor: text;
+        }
+        .disabled {
+            pointer-events: none;
+            cursor: default;
+        }
+    </style>
+</head>
+<body>
+    <div id="toolbar">
+        <button id="text-tool" class="tool-button">T</button>
+        <button id="bold-tool" class="tool-button"><b>B</b></button>
+        <button id="italic-tool" class="tool-button"><i>I</i></button>
+        <button id="underline-tool" class="tool-button"><u>U</u></button>
+        <input type="file" id="image-upload" class="tool-button" accept="image/*">
+    </div>
+    <div id="canvas"></div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const textTool = document.getElementById('text-tool');
+        const boldTool = document.getElementById('bold-tool');
+        const italicTool = document.getElementById('italic-tool');
+        const underlineTool = document.getElementById('underline-tool');
+        const imageUpload = document.getElementById('image-upload');
+
+        let currentTool = null;
+        let isResizing = false;
+        let isSelecting = true;
+        let currentElement = null;
+        let copiedElement = null;
+
+        textTool.addEventListener('click', () => {
+            currentTool = 'text';
+            isSelecting = false;
+            clearSelection();
+        });
+
+        imageUpload.addEventListener('change', (e) => {
+            if (e.target.files && e.target.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    createImageField(event.target.result);
+                };
+                reader.readAsDataURL(e.target.files[0]);
+            }
+        });
+
+        document.addEventListener('keydown', (event) => {
+            if ((event.key === 'Delete' || event.key === 'Backspace') && !document.activeElement.isContentEditable) {
+                const selectedFields = document.querySelectorAll('.text-field.selected, .image-field.selected');
+                selectedFields.forEach(field => {
+                    field.remove();
+                });
+            }
+
+            if (event.ctrlKey && event.key === 'c' && currentElement && !isSelecting) {
+                copyElement(currentElement);
+            }
+
+            if (event.ctrlKey && event.key === 'v' && copiedElement) {
+                pasteElement();
+            }
+        });
+
+        canvas.addEventListener('click', (e) => {
+            if (currentTool === 'text' && !isSelecting && !currentElement) {
+                createTextField(e.clientX, e.clientY);
+            } else if (isSelecting) {
+                const selectedField = e.target.closest('.text-field, .image-field');
+                if (selectedField) {
+                    selectElement(selectedField);
+                } else {
+                    clearSelection();
+                }
+            }
+        });
+
+        function createTextField(x, y) {
+            const textField = document.createElement('div');
+            textField.className = 'text-field';
+            textField.style.top = `${y}px`;
+            textField.style.left = `${x}px`;
+            textField.style.width = '150px';
+            textField.style.height = '50px';
+
+            const contentEditable = document.createElement('div');
+            contentEditable.className = 'content-editable';
+            contentEditable.contentEditable = true;
+            contentEditable.textContent = 'Type here...';
+
+            contentEditable.addEventListener('focus', function handleFocus() {
+                if (contentEditable.textContent === 'Type here...') {
+                    contentEditable.textContent = '';
+                    contentEditable.removeEventListener('focus', handleFocus);
+                }
+            });
+
+            contentEditable.addEventListener('blur', () => {
+                if (!isResizing) enterSelectMode();
+            });
+
+            textField.appendChild(contentEditable);
+
+            const resizeHandles = ['top-left', 'top-right', 'bottom-left', 'bottom-right'];
+            resizeHandles.forEach(handle => {
+                const resizeHandle = document.createElement('div');
+                resizeHandle.className = `resize-handle ${handle}`;
+                textField.appendChild(resizeHandle);
+            });
+
+            canvas.appendChild(textField);
+            currentElement = textField;
+
+            enableResize(textField);
+            enableDrag(textField);
+
+            selectElement(textField);
+            contentEditable.focus();
+        }
+
+        function createImageField(src) {
+            const imageField = document.createElement('div');
+            imageField.className = 'image-field';
+            imageField.style.top = '50px';
+            imageField.style.left = '50px';
+            imageField.style.width = '300px';  // Initial width
+            imageField.style.height = '300px'; // Initial height
+            imageField.style.padding = '0';    // No padding for image containers
+
+            const img = document.createElement('img');
+            img.src = src;
+            img.style.width = '100%';
+            img.style.height = '100%';
+            img.style.objectFit = 'contain'; // Ensure the image fits within the container
+            img.draggable = false;
+
+            imageField.appendChild(img);
+
+            const resizeHandles = ['top-left', 'top-right', 'bottom-left', 'bottom-right'];
+            resizeHandles.forEach(handle => {
+                const resizeHandle = document.createElement('div');
+                resizeHandle.className = `resize-handle ${handle}`;
+                imageField.appendChild(resizeHandle);
+            });
+
+            canvas.appendChild(imageField);
+            currentElement = imageField;
+
+            enableResize(imageField);
+            enableDrag(imageField);
+
+            selectElement(imageField);
+        }
+
+        function copyElement(element) {
+            copiedElement = element.cloneNode(true);
+            copiedElement.style.top = `${parseInt(element.style.top) + 20}px`;
+            copiedElement.style.left = `${parseInt(element.style.left) + 20}px`;
+        }
+
+        function pasteElement() {
+            if (copiedElement) {
+                const pastedElement = copiedElement.cloneNode(true);
+                canvas.appendChild(pastedElement);
+                enableResize(pastedElement);
+                enableDrag(pastedElement);
+                selectElement(pastedElement);
+                copiedElement = pastedElement; // Update the copiedElement to allow pasting again
+            }
+        }
+
+        function enterSelectMode() {
+            isSelecting = true;
+            currentTool = null;
+            clearSelection();
+        }
+
+        function enableResize(element) {
+            const handles = element.querySelectorAll('.resize-handle');
+
+            handles.forEach(handle => {
+                handle.addEventListener('mousedown', (e) => {
+                    isResizing = true;
+                    const handleClass = handle.className.split(' ')[1];
+                    const rect = element.getBoundingClientRect();
+
+                    showResizeHandles(element);
+
+                    const onMouseMove = (e) => {
+                        if (isResizing) {
+                            if (handleClass.includes('bottom-right')) {
+                                element.style.width = `${e.clientX - rect.left}px`;
+                                element.style.height = `${e.clientY - rect.top}px`;
+                            } else if (handleClass.includes('bottom-left')) {
+                                element.style.width = `${rect.right - e.clientX}px`;
+                                element.style.height = `${e.clientY - rect.top}px`;
+                                element.style.left = `${e.clientX}px`;
+                            } else if (handleClass.includes('top-right')) {
+                                element.style.width = `${e.clientX - rect.left}px`;
+                                element.style.height = `${rect.bottom - e.clientY}px`;
+                                element.style.top = `${e.clientY}px`;
+                            } else if (handleClass.includes('top-left')) {
+                                element.style.width = `${rect.right - e.clientX}px`;
+                                element.style.height = `${rect.bottom - e.clientY}px`;
+                                element.style.left = `${e.clientX}px`;
+                                element.style.top = `${e.clientY}px`;
+                            }
+                        }
+                    };
+
+                    const onMouseUp = () => {
+                        isResizing = false;
+                        document.removeEventListener('mousemove', onMouseMove);
+                        document.removeEventListener('mouseup', onMouseUp);
+
+                        if (!element.classList.contains('selected')) {
+                            hideResizeHandles(element);
+                        }
+                    };
+
+                    document.addEventListener('mousemove', onMouseMove);
+                    document.addEventListener('mouseup', onMouseUp);
+                });
+            });
+        }
+
+        function enableDrag(element) {
+            let isDragging = false;
+            let offsetX, offsetY;
+
+            element.addEventListener('mousedown', (e) => {
+                if (isSelecting && !isResizing) {
+                    isDragging = true;
+                    offsetX = e.clientX - element.getBoundingClientRect().left;
+                    offsetY = e.clientY - element.getBoundingClientRect().top;
+                }
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (isDragging) {
+                    element.style.left = `${e.clientX - offsetX}px`;
+                    element.style.top = `${e.clientY - offsetY}px`;
+                }
+            });
+
+            document.addEventListener('mouseup', () => {
+                isDragging = false;
+            });
+        }
+
+        function selectElement(element) {
+            clearSelection();
+            element.classList.add('selected');
+            currentElement = element;
+            showResizeHandles(element);
+
+            const contentEditable = element.querySelector('.content-editable');
+            if (contentEditable) {
+                if (isSelecting) {
+                    contentEditable.classList.add('disabled');
+                    contentEditable.contentEditable = false;
+                } else {
+                    contentEditable.classList.remove('disabled');
+                    contentEditable.contentEditable = true;
+                }
+
+                element.addEventListener('dblclick', () => {
+                    isSelecting = false;
+                    contentEditable.classList.remove('disabled');
+                    contentEditable.contentEditable = true;
+                    contentEditable.focus();
+                });
+
+                contentEditable.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                });
+            }
+        }
+
+        function clearSelection() {
+            const selectedFields = document.querySelectorAll('.text-field.selected, .image-field.selected');
+            selectedFields.forEach(field => {
+                field.classList.remove('selected');
+                hideResizeHandles(field);
+
+                const contentEditable = field.querySelector('.content-editable');
+                if (contentEditable) {
+                    contentEditable.classList.add('disabled');
+                    contentEditable.contentEditable = false;
+                }
+            });
+            currentElement = null;
+        }
+
+        function showResizeHandles(element) {
+            const handles = element.querySelectorAll('.resize-handle');
+            handles.forEach(handle => {
+                handle.style.display = 'block';
+            });
+        }
+
+        function hideResizeHandles(element) {
+            const handles = element.querySelectorAll('.resize-handle');
+            handles.forEach(handle => {
+                handle.style.display = 'none';
+            });
+        }
+
+        boldTool.addEventListener('click', () => {
+            if (currentElement && !isSelecting) {
+                document.execCommand('bold');
+            }
+        });
+
+        italicTool.addEventListener('click', () => {
+            if (currentElement && !isSelecting) {
+                document.execCommand('italic');
+            }
+        });
+
+        underlineTool.addEventListener('click', () => {
+            if (currentElement && !isSelecting) {
+                document.execCommand('underline');
+            }
+        });
+    </script>
+</body>
+</html>
