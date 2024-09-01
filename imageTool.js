@@ -1,6 +1,7 @@
 export function createImageField(src) {
     const imageField = document.createElement('div');
     imageField.className = 'image-field';
+    imageField.style.position = 'absolute';
     imageField.style.top = '50px';
     imageField.style.left = '50px';
     imageField.style.width = '300px';
@@ -8,16 +9,18 @@ export function createImageField(src) {
     imageField.style.padding = '0';
     imageField.style.border = 'none';
     imageField.style.background = 'transparent';
-    imageField.style.position = 'relative';
 
-    const img = document.createElement('img');
-    img.src = src;
+    const img = new Image(); // Use Image constructor for better loading control
     img.style.width = '100%';
     img.style.height = '100%';
     img.style.objectFit = 'contain';
     img.draggable = false;
 
-    imageField.appendChild(img);
+    img.addEventListener('load', () => {
+        imageField.appendChild(img);
+    });
+
+    img.src = src; // Set the source after event listeners are attached
 
     // Create caption box
     const captionBox = document.createElement('div');
@@ -27,8 +30,8 @@ export function createImageField(src) {
     captionBox.style.left = '0';
     captionBox.style.width = '100%';
     captionBox.style.padding = '5px';
-    captionBox.style.background = 'rgba(255, 255, 255, 0.5)'; // Transparent background
-    captionBox.style.color = 'black'; // Black text color
+    captionBox.style.background = 'rgba(255, 255, 255, 0.5)';
+    captionBox.style.color = 'black';
     captionBox.style.borderTop = '1px solid #ccc';
     captionBox.style.boxSizing = 'border-box';
     captionBox.style.display = 'none'; // Hidden by default
@@ -36,7 +39,7 @@ export function createImageField(src) {
     const captionText = document.createElement('div');
     captionText.contentEditable = true;
     captionText.style.fontSize = '14px';
-    captionText.style.color = 'black'; // Ensure the text is black
+    captionText.style.color = 'black';
     captionText.style.outline = 'none';
     captionText.textContent = 'Type caption here...';
 
@@ -74,6 +77,7 @@ export function createImageField(src) {
 
     enableResize(imageField);
     enableDrag(imageField); // Enable dragging functionality
+
     document.getElementById('canvas').appendChild(imageField);
     return imageField;
 }
@@ -123,6 +127,7 @@ function enableDrag(element) {
     let offsetX, offsetY;
 
     element.addEventListener('mousedown', (e) => {
+        e.preventDefault();
         isDragging = true;
         offsetX = e.clientX - element.getBoundingClientRect().left;
         offsetY = e.clientY - element.getBoundingClientRect().top;
