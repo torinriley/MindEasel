@@ -1,6 +1,4 @@
 /* General body styling */
-
-
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -24,36 +22,75 @@ body {
     box-sizing: border-box;
 }
 
+/* Hide font size and type buttons by default */
+#font-size-buttons,
+#font-type-buttons {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
 /* Font size buttons container styling */
 #font-size-buttons {
-    position: absolute;
-    top: calc(100% + 10px); /* Positions the font-size buttons just below the toolbar with a 10px gap */
-    left: 10px; /* Aligns the buttons with the left edge of the toolbar */
+    margin-left: auto; /* Pushes the font-size buttons to the right */
     display: flex;
     flex-direction: row;
-    gap: 10px; /* Adds spacing between the buttons */
+    gap: 10px; 
     background-color: transparent;
-    z-index: 999; /* Keeps the buttons above other elements */
-    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+    z-index: 999;
+}
+
+/* Font type buttons container styling */
+#font-type-buttons {
+    margin-left: 10px; /* Adds space between the font size buttons and font type buttons */
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    background-color: transparent;
+    z-index: 999;
+}
+
+/* Show buttons with fade-in effect */
+.show-buttons {
+    display: flex !important;
+    opacity: 1 !important;
 }
 
 /* Font size button styling */
 .font-size-button {
-    border: 2px solid black;
-    border-radius: 40px; /* Rounded borders */
-    background-color: #fff; /* White fill */
+    border: 1px solid black;
+    border-radius: 40px;
+    background-color: #fff;
     padding: 8px 16px;
-    min-width: 100px;
+    min-width: 50px;
     font-size: 16px; 
-    font-weight: 500; 
+    font-weight: 500;
     text-align: center; 
     cursor: pointer;
     transition: all 0.3s ease;
 }
 
-/* Hover effect for font size buttons */
 .font-size-button:hover {
-    background-color: rgba(0, 0, 0, 0.1); /* Adds a subtle fill on hover */
+    background-color: rgba(0, 0, 0, 0.1);
+    border-color: #000;
+}
+
+/* Font type button styling */
+.font-type-button {
+    border: 1px solid black;
+    border-radius: 40px;
+    background-color: #fff;
+    padding: 8px 16px;
+    min-width: 50px;
+    font-size: 16px; 
+    font-weight: 500;
+    text-align: center; 
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.font-type-button:hover {
+    background-color: rgba(0, 0, 0, 0.1);
     border-color: #000;
 }
 
@@ -74,11 +111,11 @@ body {
     color: #333;
 }
 
-/* Hover effect for toolbar buttons */
 .tool-button:hover {
     background: #fff;
     box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2);
 }
+
 .tool-button img {
     width: 24px;
     height: 24px;
@@ -86,29 +123,12 @@ body {
     border: none;
 }
 
-#text-tool {
-    font-size: 22px;
-    font-weight: bold;
-    background-color: transparent;
-    box-shadow: none; 
-    border: none; 
-    color: #000;
-}
-
-#text-tool:hover,
-#text-tool:active {
-    background: #fff;
-    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2);
-    border-color: #bbb;
-}
-
 #clear-tool {
-    position: absolute;
-    right: 10px;
     background: #ffdddd;
     border: 1px solid #ff8888;
-    color: #ff0000;
+    color: red;
     font-weight: bold;
+    transition: all 0.3s ease;
 }
 
 #clear-tool:hover {
@@ -117,6 +137,8 @@ body {
     border-color: #ff6666;
 }
 
+
+/* Canvas styling */
 #canvas {
     height: 100vh;
     width: 100vw;
@@ -125,10 +147,10 @@ body {
     overflow: hidden;
 }
 
-.text-field, .image-field {
+.text-field {
     position: absolute;
     padding: 10px;
-    background: #fff;
+    background: transparent;
     border-radius: 3px;
     font-size: 16px;
     cursor: pointer;
@@ -176,10 +198,15 @@ body {
     left: 0;
     width: 100%;
     padding: 5px;
-    background: rgba(255, 255, 255, 0.5); /* Transparent background */
-    color: black; /* Black text color */
+    background: rgba(255, 255, 255, 0.5); 
+    color: black; 
     border-top: 1px solid #ccc;
     box-sizing: border-box;
-    display: none; /* Hidden by default */
+    display: none;
     z-index: 1;
+}
+
+/* Text field selected styling */
+.text-field.selected {
+    border: 2px dashed #000;
 }

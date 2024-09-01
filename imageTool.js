@@ -9,8 +9,9 @@ export function createImageField(src) {
     imageField.style.padding = '0';
     imageField.style.border = 'none';
     imageField.style.background = 'transparent';
+    imageField.style.boxSizing = 'border-box'; // Ensure padding and border are included in width/height
 
-    const img = new Image(); // Use Image constructor for better loading control
+    const img = new Image();
     img.style.width = '100%';
     img.style.height = '100%';
     img.style.objectFit = 'contain';
@@ -20,17 +21,17 @@ export function createImageField(src) {
         imageField.appendChild(img);
     });
 
-    img.src = src; // Set the source after event listeners are attached
+    img.src = src;
 
     // Create caption box
     const captionBox = document.createElement('div');
     captionBox.className = 'caption-box';
     captionBox.style.position = 'absolute';
-    captionBox.style.bottom = '0';
-    captionBox.style.left = '0';
-    captionBox.style.width = '100%';
+    captionBox.style.bottom = '0'; // Always position at the bottom
+    captionBox.style.left = '0';   // Align to the left
+    captionBox.style.width = '100%'; // Make the caption span the full width of the image
     captionBox.style.padding = '5px';
-    captionBox.style.background = 'rgba(255, 255, 255, 0.5)';
+    captionBox.style.background = 'rgba(255, 255, 255, 0.7)';
     captionBox.style.color = 'black';
     captionBox.style.borderTop = '1px solid #ccc';
     captionBox.style.boxSizing = 'border-box';
@@ -82,7 +83,7 @@ export function createImageField(src) {
     return imageField;
 }
 
-function enableResize(element) {
+export function enableResize(element) {
     const handles = element.querySelectorAll('.resize-handle');
 
     handles.forEach(handle => {
@@ -122,7 +123,7 @@ function enableResize(element) {
     });
 }
 
-function enableDrag(element) {
+export function enableDrag(element) {
     let isDragging = false;
     let offsetX, offsetY;
 
