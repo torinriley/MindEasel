@@ -127,7 +127,6 @@ body {
 
 .text-field, .image-field {
     position: absolute;
-    border: 1px solid #ccc;
     padding: 10px;
     background: #fff;
     border-radius: 3px;
