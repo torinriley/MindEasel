@@ -16,13 +16,22 @@ body {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     z-index: 1000;
     display: flex;
+    
     align-items: center;
     border: 1px solid transparent;
     border-radius: 0 0 10px 10px;
     box-sizing: border-box;
 }
 
-/* Hide font size and type buttons by default */
+#mind-easel-logo {
+    max-height: 100%; 
+    max-width: 150px; 
+    object-fit: contain;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
 #font-size-buttons,
 #font-type-buttons {
     display: none;
@@ -30,7 +39,6 @@ body {
     transition: opacity 0.3s ease-in-out;
 }
 
-/* Font size buttons container styling */
 #font-size-buttons {
     margin-left: auto; /* Pushes the font-size buttons to the right */
     display: flex;

@@ -6,8 +6,12 @@ export function deleteSelectedElement() {
 }
 
 export function clearCanvas() {
-    const canvas = document.getElementById('canvas');
-    while (canvas.firstChild) {
-        canvas.removeChild(canvas.firstChild);
+    const userConfirmed = confirm("Are you sure you want to clear the entire canvas? This action cannot be undone.");
+
+    if (userConfirmed) {
+        const canvas = document.getElementById('canvas');
+        while (canvas.firstChild) {
+            canvas.removeChild(canvas.firstChild);
+        }
     }
 }
