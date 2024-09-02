@@ -6,6 +6,6 @@
 - [ ] upgrade text editor
 
 ### Medium Priority
-
+- [ ] add collaboration
 ### Low Priority
 
