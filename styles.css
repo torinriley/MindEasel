@@ -49,6 +49,7 @@ body {
 }
 
 /* Font type buttons container styling */
+/* Font type buttons container styling */
 #font-type-buttons {
     margin-left: 10px; /* Adds space between the font size buttons and font type buttons */
     display: flex;
@@ -56,6 +57,16 @@ body {
     gap: 10px;
     background-color: transparent;
     z-index: 999;
+}
+
+/* Container around font type buttons */
+.font-type-container {
+    border: .5px solid black;
+    border-radius: 40px;
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 /* Show buttons with fade-in effect */

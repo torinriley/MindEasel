@@ -1,7 +1,7 @@
-import { enableResize, enableDrag, selectElement, clearSelection } from './resizeAndDrag.js';
-import { createTextField } from './textTool.js';
-import { createImageField } from './imageTool.js';
-import { deleteSelectedElement, clearCanvas } from './clear.js';
+import { enableResize, enableDrag, selectElement, clearSelection } from './scripts/resizeAndDrag.js';
+import { createTextField } from './scripts/textTool.js';
+import { createImageField } from './scripts/imageTool.js';
+import { deleteSelectedElement, clearCanvas } from './scripts/clear.js';
 
 const canvas = document.getElementById('canvas');
 const textTool = document.getElementById('text-tool');
@@ -9,6 +9,7 @@ const imageUpload = document.getElementById('image-upload');
 const clearTool = document.getElementById('clear-tool');
 
 // Font size buttons
+const fontTitleButton = document.getElementById('font-title');
 const fontSmallButton = document.getElementById('font-small');
 const fontMediumButton = document.getElementById('font-medium');
 const fontLargeButton = document.getElementById('font-large');
@@ -77,6 +78,7 @@ clearTool.addEventListener('click', () => {
 });
 
 // Font size change event listeners
+fontTitleButton.addEventListener('click', () => changeFontSize('24px'));
 fontSmallButton.addEventListener('click', () => changeFontSize('12px'));
 fontMediumButton.addEventListener('click', () => changeFontSize('16px'));
 fontLargeButton.addEventListener('click', () => changeFontSize('20px'));
@@ -85,6 +87,16 @@ fontLargeButton.addEventListener('click', () => changeFontSize('20px'));
 fontArialButton.addEventListener('click', () => changeFontType('Arial, sans-serif'));
 fontTimesButton.addEventListener('click', () => changeFontType('"Times New Roman", serif'));
 fontCourierButton.addEventListener('click', () => changeFontType('"Courier New", monospace'));
+
+
+fontTitleButton.addEventListener('click', () => {
+    changeFontSize('24px');
+    const selectedField = document.querySelector('.text-field.selected .content-editable');
+    if (selectedField) {
+        selectedField.style.fontWeight = 'bold';
+        selectedField.style.textAlign = 'center';
+    }
+});
 
 // Function to change the font size of the selected text field
 function changeFontSize(size) {

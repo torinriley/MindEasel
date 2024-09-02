@@ -14,7 +14,9 @@ export function createImageField(src) {
     const img = new Image();
     img.style.width = '100%';
     img.style.height = '100%';
-    img.style.objectFit = 'contain';
+    img.style.objectFit = 'contain'; // Maintain aspect ratio, fit image within container
+    img.style.maxWidth = '100%'; // Ensure image never exceeds container size
+    img.style.maxHeight = '100%';
     img.draggable = false;
 
     img.addEventListener('load', () => {
@@ -31,7 +33,7 @@ export function createImageField(src) {
     captionBox.style.left = '0';   // Align to the left
     captionBox.style.width = '100%'; // Make the caption span the full width of the image
     captionBox.style.padding = '5px';
-    captionBox.style.background = 'rgba(255, 255, 255, 0.7)';
+    captionBox.style.background = 'rgba(255, 255, 255, 1.0)'; // Ensure caption box is always white
     captionBox.style.color = 'black';
     captionBox.style.borderTop = '1px solid #ccc';
     captionBox.style.boxSizing = 'border-box';
@@ -40,7 +42,7 @@ export function createImageField(src) {
     const captionText = document.createElement('div');
     captionText.contentEditable = true;
     captionText.style.fontSize = '14px';
-    captionText.style.color = 'black';
+    captionText.style.color = 'grey';
     captionText.style.outline = 'none';
     captionText.textContent = 'Type caption here...';
 
@@ -73,11 +75,47 @@ export function createImageField(src) {
     resizeHandles.forEach(handle => {
         const resizeHandle = document.createElement('div');
         resizeHandle.className = `resize-handle ${handle}`;
+        resizeHandle.style.position = 'absolute';
+        resizeHandle.style.width = '10px';
+        resizeHandle.style.height = '10px';
+        resizeHandle.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+        resizeHandle.style.cursor = `${handle.replace('-', '')}-resize`;
+
+        if (handle.includes('top')) {
+            resizeHandle.style.top = '-5px';
+        } else {
+            resizeHandle.style.bottom = '-5px';
+        }
+
+        if (handle.includes('left')) {
+            resizeHandle.style.left = '-5px';
+        } else {
+            resizeHandle.style.right = '-5px';
+        }
+
         imageField.appendChild(resizeHandle);
     });
 
     enableResize(imageField);
-    enableDrag(imageField); // Enable dragging functionality
+    enableDrag(imageField); 
+
+    // Add delete functionality
+    imageField.addEventListener('click', () => {
+        imageField.classList.add('selected'); // Mark the image as selected
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Delete' && imageField.classList.contains('selected')) {
+                imageField.remove(); // Remove the image field from the document
+            }
+        });
+    });
+
+    // Deselect image when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!imageField.contains(e.target)) {
+            imageField.classList.remove('selected');
+        }
+    });
 
     document.getElementById('canvas').appendChild(imageField);
     return imageField;

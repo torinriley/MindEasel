@@ -8,38 +8,41 @@
 </head>
 <body>
     <div id="toolbar">
-        <button id="text-tool" class="tool-button" style="font-size: larger;"><strong>T</strong></button>
+        <button id="text-tool" class="tool-button" style="font-size: larger;"><img src="assets/text.png" alt="Text"></button>
         <input type="file" id="image-upload" class="tool-button" accept="image/*" style="display:none;">
         <label for="image-upload" class="tool-button">
-            <img src="upload.png" alt="Upload Image">
+            <img src="assets/upload.png" alt="Upload Image">
         </label>
         <button id="clear-tool" class="tool-button">Clear</button>
 
         <!-- Mind Easel Logo -->
-        <img src="mind-easel.png" alt="Mind Easel" id="mind-easel-logo">
+        <img src="assets/mind-easel.png" alt="Mind Easel" id="mind-easel-logo">
 
         <!-- Font Size Buttons -->
-        <div id="font-size-buttons">
+         
+        <div id="font-size-buttons" class="font-type-container">
+            <button id="font-title" class="font-size-button"><strong>Title</strong></button>
             <button id="font-small" class="font-size-button">A-</button>
             <button id="font-medium" class="font-size-button">A</button>
             <button id="font-large" class="font-size-button">A+</button>
         </div>
-    
+
         <!-- Font Type Buttons -->
-        <div id="font-type-buttons">
+        <div id="font-type-buttons" class="font-type-container">
             <button id="font-arial" class="font-type-button" style="font-family: Arial;">T</button>
             <button id="font-times" class="font-type-button" style="font-family: 'Times New Roman';">T</button>
             <button id="font-courier" class="font-type-button" style="font-family: Courier;">T</button>
         </div>
     </div>
+    </div>
     
     <div id="canvas"></div>
 
     <!-- Scripts -->
-    <script src="resizeAndDrag.js" type="module"></script>
-    <script src="textTool.js" type="module"></script>
-    <script src="clear.js" type="module"></script>
-    <script src="imageTool.js" type="module"></script>
+    <script src="scripts/resizeAndDrag.js" type="module"></script>
+    <script src="scripts/textTool.js" type="module"></script>
+    <script src="scripts/clear.js" type="module"></script>
+    <script src="scripts/imageTool.js" type="module"></script>
     <script src="script.js" type="module"></script>
 </body>
 </html>
