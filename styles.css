@@ -229,3 +229,9 @@ body {
 .text-field.selected {
     border: 2px dashed #000;
 }
+
+.font-type-button.active {
+    background-color: #ddd; /* or any other style to indicate the button is active */
+    border: 2px solid #000;
+}
+

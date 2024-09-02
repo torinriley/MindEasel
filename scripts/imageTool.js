@@ -9,13 +9,13 @@ export function createImageField(src) {
     imageField.style.padding = '0';
     imageField.style.border = 'none';
     imageField.style.background = 'transparent';
-    imageField.style.boxSizing = 'border-box'; // Ensure padding and border are included in width/height
+    imageField.style.boxSizing = 'border-box'; 
 
     const img = new Image();
     img.style.width = '100%';
     img.style.height = '100%';
-    img.style.objectFit = 'contain'; // Maintain aspect ratio, fit image within container
-    img.style.maxWidth = '100%'; // Ensure image never exceeds container size
+    img.style.objectFit = 'contain'; 
+    img.style.maxWidth = '100%'; 
     img.style.maxHeight = '100%';
     img.draggable = false;
 
@@ -29,15 +29,15 @@ export function createImageField(src) {
     const captionBox = document.createElement('div');
     captionBox.className = 'caption-box';
     captionBox.style.position = 'absolute';
-    captionBox.style.bottom = '0'; // Always position at the bottom
-    captionBox.style.left = '0';   // Align to the left
-    captionBox.style.width = '100%'; // Make the caption span the full width of the image
+    captionBox.style.bottom = '0'; 
+    captionBox.style.left = '0';   
+    captionBox.style.width = '100%'; 
     captionBox.style.padding = '5px';
-    captionBox.style.background = 'rgba(255, 255, 255, 1.0)'; // Ensure caption box is always white
+    captionBox.style.background = 'rgba(255, 255, 255, 1.0)';
     captionBox.style.color = 'black';
     captionBox.style.borderTop = '1px solid #ccc';
     captionBox.style.boxSizing = 'border-box';
-    captionBox.style.display = 'none'; // Hidden by default
+    captionBox.style.display = 'none'; 
 
     const captionText = document.createElement('div');
     captionText.contentEditable = true;
@@ -56,13 +56,11 @@ export function createImageField(src) {
     captionBox.appendChild(captionText);
     imageField.appendChild(captionBox);
 
-    // Show caption on double-click
     imageField.addEventListener('dblclick', () => {
         captionBox.style.display = 'block';
         captionText.focus();
     });
 
-    // Hide caption when caption text loses focus
     captionText.addEventListener('blur', () => {
         if (captionText.textContent.trim() === '') {
             captionText.textContent = 'Type caption here...';
@@ -99,13 +97,12 @@ export function createImageField(src) {
     enableResize(imageField);
     enableDrag(imageField); 
 
-    // Add delete functionality
     imageField.addEventListener('click', () => {
-        imageField.classList.add('selected'); // Mark the image as selected
+        imageField.classList.add('selected'); 
 
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Delete' && imageField.classList.contains('selected')) {
-                imageField.remove(); // Remove the image field from the document
+                imageField.remove();
             }
         });
     });

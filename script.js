@@ -89,6 +89,7 @@ fontTimesButton.addEventListener('click', () => changeFontType('"Times New Roman
 fontCourierButton.addEventListener('click', () => changeFontType('"Courier New", monospace'));
 
 
+// title function
 fontTitleButton.addEventListener('click', () => {
     changeFontSize('24px');
     const selectedField = document.querySelector('.text-field.selected .content-editable');
@@ -103,6 +104,8 @@ function changeFontSize(size) {
     const selectedField = document.querySelector('.text-field.selected .content-editable');
     if (selectedField) {
         selectedField.style.fontSize = size;
+        selectedField.style.textAlign = 'left';
+        selectedField.style.fontWeight = 'normal';
     }
 }
 
