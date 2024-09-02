@@ -37,3 +37,8 @@ Above is the text box feature, where you can add and edit inside a text box
 
    ```bash
    git clone https://github.com/yourusername/mind-easel.git
+
+# Exmaples
+![Custom Text Editor](https://github.com/user-attachments/assets/5d885222-9344-41dd-b5a8-422f644e5f67)
+![Custom Text Editor 2](https://github.com/user-attachments/assets/7d3a31f2-0111-4fd6-81db-71a7854c6576)
+
