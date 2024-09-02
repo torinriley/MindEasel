@@ -12,15 +12,20 @@ export function createTextField(x, y) {
     contentEditable.contentEditable = true;
     contentEditable.textContent = 'Type here...';
     contentEditable.style.fontSize = '16px';
+    contentEditable.style.color = 'grey'; 
 
-    contentEditable.addEventListener('focus', function handleFocus() {
+    contentEditable.addEventListener('focus', () => {
         if (contentEditable.textContent === 'Type here...') {
             contentEditable.textContent = '';
-            contentEditable.removeEventListener('focus', handleFocus);
+            contentEditable.style.color = 'black';
         }
     });
 
     contentEditable.addEventListener('blur', () => {
+        if (contentEditable.textContent.trim() === '') {
+            contentEditable.textContent = 'Type here...';
+            contentEditable.style.color = 'grey'; 
+        }
         saveTextContent(textField.id, contentEditable.textContent);
     });
 
@@ -38,9 +43,6 @@ export function createTextField(x, y) {
     return textField;
 }
 
-function saveTextContent(elementId, text) {
-    // Implement your save logic here
-}
 
 export function changeFontSize(size) {
     const selectedTextField = document.querySelector('.text-field.selected .content-editable');
