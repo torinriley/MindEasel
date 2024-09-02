@@ -8,20 +8,17 @@ const textTool = document.getElementById('text-tool');
 const imageUpload = document.getElementById('image-upload');
 const clearTool = document.getElementById('clear-tool');
 
-// Font size buttons
 const fontTitleButton = document.getElementById('font-title');
 const fontSmallButton = document.getElementById('font-small');
 const fontMediumButton = document.getElementById('font-medium');
 const fontLargeButton = document.getElementById('font-large');
 
-// Font type buttons
 const fontArialButton = document.getElementById('font-arial');
 const fontTimesButton = document.getElementById('font-times');
 const fontCourierButton = document.getElementById('font-courier');
 
 let currentTool = null;
 
-// Initialize tools
 textTool.addEventListener('click', () => {
     currentTool = 'text';
     clearSelection();
@@ -77,19 +74,16 @@ clearTool.addEventListener('click', () => {
     hideFontButtons();
 });
 
-// Font size change event listeners
 fontTitleButton.addEventListener('click', () => changeFontSize('24px'));
 fontSmallButton.addEventListener('click', () => changeFontSize('12px'));
 fontMediumButton.addEventListener('click', () => changeFontSize('16px'));
 fontLargeButton.addEventListener('click', () => changeFontSize('20px'));
 
-// Font type change event listeners
 fontArialButton.addEventListener('click', () => changeFontType('Arial, sans-serif'));
 fontTimesButton.addEventListener('click', () => changeFontType('"Times New Roman", serif'));
 fontCourierButton.addEventListener('click', () => changeFontType('"Courier New", monospace'));
 
 
-// title function
 fontTitleButton.addEventListener('click', () => {
     changeFontSize('24px');
     const selectedField = document.querySelector('.text-field.selected .content-editable');
@@ -99,7 +93,6 @@ fontTitleButton.addEventListener('click', () => {
     }
 });
 
-// Function to change the font size of the selected text field
 function changeFontSize(size) {
     const selectedField = document.querySelector('.text-field.selected .content-editable');
     if (selectedField) {
@@ -109,7 +102,6 @@ function changeFontSize(size) {
     }
 }
 
-// Function to change the font type of the selected text field
 function changeFontType(font) {
     const selectedField = document.querySelector('.text-field.selected .content-editable');
     if (selectedField) {
@@ -117,7 +109,6 @@ function changeFontType(font) {
     }
 }
 
-// Function to show font buttons with fade-in effect
 function showFontButtons() {
     const fontSizeButtons = document.getElementById('font-size-buttons');
     const fontTypeButtons = document.getElementById('font-type-buttons');
@@ -125,7 +116,6 @@ function showFontButtons() {
     fontTypeButtons.classList.add('show-buttons');
 }
 
-// Function to hide font buttons with fade-out effect
 function hideFontButtons() {
     const fontSizeButtons = document.getElementById('font-size-buttons');
     const fontTypeButtons = document.getElementById('font-type-buttons');

@@ -52,7 +52,6 @@ export function enableDrag(element) {
     let offsetX, offsetY;
 
     element.addEventListener('mousedown', (e) => {
-        // Prevent dragging if clicking on content-editable area (to allow text selection)
         if (e.target.isContentEditable) {
             return;
         }
