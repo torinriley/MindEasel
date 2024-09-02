@@ -1,11 +1,9 @@
-/* General body styling */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
 }
 
-/* Toolbar styling */
 #toolbar {
     position: fixed;
     top: 0;
@@ -40,7 +38,7 @@ body {
 }
 
 #font-size-buttons {
-    margin-left: auto; /* Pushes the font-size buttons to the right */
+    margin-left: auto; 
     display: flex;
     flex-direction: row;
     gap: 10px; 
@@ -48,10 +46,9 @@ body {
     z-index: 999;
 }
 
-/* Font type buttons container styling */
-/* Font type buttons container styling */
+
 #font-type-buttons {
-    margin-left: 10px; /* Adds space between the font size buttons and font type buttons */
+    margin-left: 10px; 
     display: flex;
     flex-direction: row;
     gap: 10px;
@@ -59,7 +56,6 @@ body {
     z-index: 999;
 }
 
-/* Container around font type buttons */
 .font-type-container {
     border: .5px solid black;
     border-radius: 40px;
@@ -69,7 +65,6 @@ body {
     justify-content: center;
 }
 
-/* Show buttons with fade-in effect */
 .show-buttons {
     display: flex !important;
     opacity: 1 !important;
@@ -94,7 +89,6 @@ body {
     border-color: #000;
 }
 
-/* Font type button styling */
 .font-type-button {
     border: 1px solid black;
     border-radius: 40px;
@@ -210,7 +204,6 @@ body {
     cursor: default;
 }
 
-/* Caption box styling */
 .caption-box {
     position: absolute;
     bottom: 0;
@@ -225,13 +218,12 @@ body {
     z-index: 1;
 }
 
-/* Text field selected styling */
 .text-field.selected {
     border: 2px dashed #000;
 }
 
 .font-type-button.active {
-    background-color: #ddd; /* or any other style to indicate the button is active */
+    background-color: #ddd; 
     border: 2px solid #000;
 }
 

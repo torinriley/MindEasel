@@ -25,7 +25,6 @@ export function createImageField(src) {
 
     img.src = src;
 
-    // Create caption box
     const captionBox = document.createElement('div');
     captionBox.className = 'caption-box';
     captionBox.style.position = 'absolute';
@@ -68,7 +67,6 @@ export function createImageField(src) {
         }
     });
 
-    // Add resize handles
     const resizeHandles = ['top-left', 'top-right', 'bottom-left', 'bottom-right'];
     resizeHandles.forEach(handle => {
         const resizeHandle = document.createElement('div');
@@ -107,7 +105,6 @@ export function createImageField(src) {
         });
     });
 
-    // Deselect image when clicking outside
     document.addEventListener('click', (e) => {
         if (!imageField.contains(e.target)) {
             imageField.classList.remove('selected');

@@ -10,7 +10,6 @@
 - **Real-Time Collaboration:** Work with others in real-time to build your mind maps.
 - **Customizable Themes:** Switch between light and dark modes to suit your preferences.
 - **Open Source:** Fully open-source, customizable, and free for everyone.
-- **Responsive Design:** Accessible on any device, from desktops to tablets.
 
   
 ## **Text box**
@@ -41,4 +40,16 @@ Above is the text box feature, where you can add and edit inside a text box.
 # Exmaples
 ![Custom Text Editor](https://github.com/user-attachments/assets/5d885222-9344-41dd-b5a8-422f644e5f67)
 ![Custom Text Editor 2](https://github.com/user-attachments/assets/7d3a31f2-0111-4fd6-81db-71a7854c6576)
+
+
+# Features In Progress
+- **Shapes and lines:** Soon, you'll be abel to create and draw lines and shapes, and dynacmically connect tex boxs with lines to seamlessly organize oyur ideas
+- **Customizable colors:** You'll be able to customize the colors of your text boxes, lines
+- **Customizable fonts:** You'll be able to have even more options for fonts
+- **Customizable themes:** You'll be able to create your own themes and switch between them
+- **Collaboration:** You'll be able to invite others to collaborate on your mind maps in
+- **Export options:** You'll be able to export your mind maps in various formats, such as
+- **Autosave:** Your work will be automatically saved as you go, so you never lose
+- **Keyboard shortcuts:** You'll be able to speed up your workflow with a range of keyboard
+- **Responsive design:** The app will be optimized for all devices, ensuring a seamless experience on desktop
 
