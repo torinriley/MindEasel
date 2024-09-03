@@ -14,7 +14,7 @@
   
 ## **Text box**
 <img width="1000" height="400" alt="Screenshot 2024-09-01 at 1 26 33 AM" src="https://github.com/user-attachments/assets/aae7d9ee-78dd-478b-bf35-26f14ed50be9">
-Above is the text box feature, where you can add and edit inside a text box.
+Above is the text box feature, where you can add and edit inside a text box. This has been updated.
 
 
 
