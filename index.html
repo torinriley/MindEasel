@@ -5,6 +5,7 @@
     <title>Mind Easel</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" href="favicon.png" type="image/png">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
     <div id="toolbar">
@@ -13,11 +14,16 @@
         <label for="image-upload" class="tool-button">
             <img src="assets/upload.png" alt="Upload Image">
         </label>
+        
+        <!-- Save button replaced with image -->
+        <button id="save-button" class="tool-button">
+            <img src="assets/save.png" alt="Save Screenshot">
+        </button>
+
         <button id="clear-tool" class="tool-button">Clear</button>
 
         <img src="assets/mind-easel.png" alt="Mind Easel" id="mind-easel-logo">
 
-         
         <div id="font-size-buttons" class="font-type-container">
             <button id="font-title" class="font-size-button"><strong>Title</strong></button>
             <button id="font-small" class="font-size-button">A-</button>
@@ -30,7 +36,6 @@
             <button id="font-times" class="font-type-button" style="font-family: 'Times New Roman';">T</button>
             <button id="font-courier" class="font-type-button" style="font-family: Courier;">T</button>
         </div>
-    </div>
     </div>
     
     <div id="canvas"></div>

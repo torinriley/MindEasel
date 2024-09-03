@@ -1,3 +1,5 @@
+
+//BSP Tree for image rendering
 class TreeNode {
     constructor(imageField, left = null, right = null) {
         this.imageField = imageField;
