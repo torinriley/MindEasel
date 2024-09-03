@@ -122,3 +122,16 @@ function hideFontButtons() {
     fontSizeButtons.classList.remove('show-buttons');
     fontTypeButtons.classList.remove('show-buttons');
 }
+
+document.getElementById('save-button').addEventListener('click', saveScreenshot);
+function saveScreenshot() {
+    const canvasElement = document.getElementById('canvas');
+
+    html2canvas(canvasElement).then(canvas => {
+        const dataURL = canvas.toDataURL('image/png');
+        const downloadLink = document.createElement('a');
+        downloadLink.href = dataURL;
+        downloadLink.download = 'screenshot.png';
+        downloadLink.click();
+    });
+}
