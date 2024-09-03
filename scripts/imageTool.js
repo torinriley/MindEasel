@@ -1,3 +1,56 @@
+class TreeNode {
+    constructor(imageField, left = null, right = null) {
+        this.imageField = imageField;
+        this.left = left;
+        this.right = right;
+    }
+}
+
+class BSPTree {
+    constructor() {
+        this.root = null;
+    }
+
+    insert(imageField) {
+        const x = parseInt(imageField.style.left, 10);
+        this.root = this._insertRec(this.root, imageField, x);
+    }
+
+    _insertRec(node, imageField, x) {
+        if (!node) return new TreeNode(imageField);
+        const nodeX = parseInt(node.imageField.style.left, 10);
+        if (x < nodeX) {
+            node.left = this._insertRec(node.left, imageField, x);
+        } else {
+            node.right = this._insertRec(node.right, imageField, x);
+        }
+        return node;
+    }
+
+    render(ctx) {
+        this._inOrderTraverse(this.root, ctx);
+    }
+
+    _inOrderTraverse(node, ctx) {
+        if (node) {
+            this._inOrderTraverse(node.left, ctx);
+            this._renderImage(node.imageField, ctx);
+            this._inOrderTraverse(node.right, ctx);
+        }
+    }
+
+    _renderImage(imageField, ctx) {
+        const img = imageField.querySelector('img');
+        const x = parseInt(imageField.style.left, 10);
+        const y = parseInt(imageField.style.top, 10);
+        const width = parseInt(imageField.style.width, 10);
+        const height = parseInt(imageField.style.height, 10);
+        ctx.drawImage(img, x, y, width, height);
+    }
+}
+
+const bspTree = new BSPTree();
+
 export function createImageField(src) {
     const imageField = document.createElement('div');
     imageField.className = 'image-field';
@@ -9,18 +62,27 @@ export function createImageField(src) {
     imageField.style.padding = '0';
     imageField.style.border = 'none';
     imageField.style.background = 'transparent';
-    imageField.style.boxSizing = 'border-box'; 
+    imageField.style.boxSizing = 'border-box';
 
     const img = new Image();
     img.style.width = '100%';
     img.style.height = '100%';
-    img.style.objectFit = 'contain'; 
-    img.style.maxWidth = '100%'; 
+    img.style.objectFit = 'contain';
+    img.style.maxWidth = '100%';
     img.style.maxHeight = '100%';
     img.draggable = false;
 
     img.addEventListener('load', () => {
         imageField.appendChild(img);
+        document.getElementById('canvas').appendChild(imageField);
+
+        enableResize(imageField);
+        enableDrag(imageField);
+
+        // Optional: Insert the image into the BSP tree and render
+        const ctx = document.getElementById('canvas').getContext('2d');
+        bspTree.insert(imageField);
+        bspTree.render(ctx);
     });
 
     img.src = src;
@@ -28,15 +90,15 @@ export function createImageField(src) {
     const captionBox = document.createElement('div');
     captionBox.className = 'caption-box';
     captionBox.style.position = 'absolute';
-    captionBox.style.bottom = '0'; 
-    captionBox.style.left = '0';   
-    captionBox.style.width = '100%'; 
+    captionBox.style.bottom = '0';
+    captionBox.style.left = '0';
+    captionBox.style.width = '100%';
     captionBox.style.padding = '5px';
     captionBox.style.background = 'rgba(255, 255, 255, 1.0)';
     captionBox.style.color = 'black';
     captionBox.style.borderTop = '1px solid #ccc';
     captionBox.style.boxSizing = 'border-box';
-    captionBox.style.display = 'none'; 
+    captionBox.style.display = 'none';
 
     const captionText = document.createElement('div');
     captionText.contentEditable = true;
@@ -92,11 +154,8 @@ export function createImageField(src) {
         imageField.appendChild(resizeHandle);
     });
 
-    enableResize(imageField);
-    enableDrag(imageField); 
-
     imageField.addEventListener('click', () => {
-        imageField.classList.add('selected'); 
+        imageField.classList.add('selected');
 
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Delete' && imageField.classList.contains('selected')) {
@@ -111,7 +170,6 @@ export function createImageField(src) {
         }
     });
 
-    document.getElementById('canvas').appendChild(imageField);
     return imageField;
 }
 

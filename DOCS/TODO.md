@@ -7,5 +7,10 @@
 
 ### Medium Priority
 - [ ] add collaboration
+- [ ] add real time commenting
+- [ ] add file sharing
+- [ ] add file versioning
+
+
 ### Low Priority
 
