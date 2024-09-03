@@ -96,7 +96,7 @@ export function createImageField(src) {
     captionBox.style.left = '0';
     captionBox.style.width = '100%';
     captionBox.style.padding = '5px';
-    captionBox.style.background = 'rgba(255, 255, 255, 1.0)';
+    captionBox.style.background = 'transparent';
     captionBox.style.color = 'black';
     captionBox.style.borderTop = '1px solid #ccc';
     captionBox.style.boxSizing = 'border-box';
